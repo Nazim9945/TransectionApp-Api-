@@ -3,7 +3,8 @@ import accountSchema from "../model/accountSchema.js"
 export default async(req,res)=>{
    try {
      const {id}=req.body
-    const user=await accountSchema.findById({userId:id});
+     console.log("id is herre",id)
+    const user=await accountSchema.findOne({userId:id});
     return res.status(200).json({
         balance:user.balance
     })
