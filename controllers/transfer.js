@@ -1,21 +1,21 @@
 import accountSchema from "../model/accountSchema.js";
-
+import mongoose from "mongoose";
 export default async(req,res)=>{
     try {
         const session=await mongoose.startSession();
-        await session.startTransection()
+     session.startTransaction();
         const {to,amount}=req.body;
         const touser=await accountSchema.find({userId:to});
         const currentuser=await accountSchema.find({userid:req.body.id})
         if(!touser || !currentuser){
-            await session.abortTransection()
+           session.abortTransection()
             return res.status(404).json({
                 msg:"Invalid user"
             }
             )
         }
-        if(current.balance<amount){
-            await session.abortTransection()
+        if(currentuser.balance<amount){
+         session.abortTransection()
             return res.status(404).json({
                 msg:"Not have enough balance"
             }
@@ -23,8 +23,8 @@ export default async(req,res)=>{
         }
         await accountSchema.updateOne({userId:to},{$inc:{balance:amount}},{new:true})
         await accountSchema.updateOne({userId:req.body.id},{$inc:{balance:-amount}},{new:true})
-        await session.commitTransaction();
-        return res.status.json({
+       session.commitTransaction();
+        return res.status(200).json({
             msg:"Money transfered successfully!!"
         })
 
