@@ -11,10 +11,11 @@ export default async(req,res)=>{
     try {
         const body=req.body
         const {firstName,lastName}=body;
-        if(!bodySchema.safeparser(req.body).success)return res.status(411).json({
+        if(!bodySchema.safeParse(body).success)return res.status(411).json({
             msg:"Inputs incorrects"
         })
-       await userSchema.findOneAndUpdate({_id:req.body.id},{firstName,lastName});
+      await userSchema.updateOne({_id:req.body.id},{firstName,lastName});
+      
        return res.status(200).json({
         msg:"upadated successfully"
        })
