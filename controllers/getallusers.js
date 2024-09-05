@@ -3,6 +3,9 @@ import userSchema from "../model/userSchema.js";
 export default async(req,res)=>{
 try {
     const{filter}=req.query || "";
+    if(!filter) return res.status(411).json({
+        response:[]
+    })
     const users=await userSchema.find({
         $or:[{
             firstName:{
@@ -21,7 +24,8 @@ try {
     const filterUser=users.filter(user=> (user._id).valueOf()!==req.body.id);
     const response=filterUser.map(fil=>({
         id:fil._id,
-        firstName:fil.firstName
+        firstName:fil.firstName,
+        lastName:fil.lastName
     }));
     return res.status(200).json({
         response

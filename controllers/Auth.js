@@ -1,6 +1,6 @@
 import userSchema from "../model/userSchema.js";
 import jwt from 'jsonwebtoken'
-import z, { optional } from 'zod'
+import z  from 'zod'
 import bcrypt from 'bcrypt'
 import * as dotenv from 'dotenv';
 import accountSchema from "../model/accountSchema.js";
@@ -37,7 +37,7 @@ try {
 const user=await userSchema.create({...body,password:hashpwd});
 await accountSchema.create({userId:user._id,balance:Math.floor(Math.random()*10000)+1})
 return res.status(200).json({
-    msg:"user created successfully"
+    msg:"user created successfully",
 })
 
 
@@ -68,11 +68,13 @@ try {
 })
 if(await bcrypt.compare(password,existuser.password)){
 const payload={
-    id:existuser._id
+    id:existuser._id,
+     firstName:existuser.firstName,
 }
 const token=jwt.sign(payload,process.env.JWT_SECRECT,{expiresIn:'24h'});
 return res.status(200).json({
-    msg:"user created successfully",
+   
+    msg:"user logged in successfully",
     token
 })
 }
