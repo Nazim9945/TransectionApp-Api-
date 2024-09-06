@@ -5,17 +5,27 @@ export default async(req,res)=>{
         const session=await mongoose.startSession();
      session.startTransaction();
         const {to,amount}=req.body;
-        const touser=await accountSchema.find({userId:to});
-        const currentuser=await accountSchema.find({userid:req.body.id})
+        if(amount<=0){
+            await session.abortTransaction()
+            return res.status(404).json({
+                msg:"Invalid amount"
+            })
+        }
+        const touser=await accountSchema.findOne({userId:to});
+        const currentuser=await accountSchema.findOne({userId:req.body.id})
+        console.log("payable:",amount,typeof (amount))
+        console.log("kitna hai",currentuser.balance,typeof currentuser.balance)
+        console.log("who is ",currentuser)
+         console.log("who is ",touser)
         if(!touser || !currentuser){
-           session.abortTransection()
+             await session.abortTransaction();
             return res.status(404).json({
                 msg:"Invalid user"
             }
             )
         }
-        if(currentuser.balance<amount){
-         session.abortTransection()
+        if(Number(currentuser.balance)<Number(amount)){
+           await session.abortTransaction();
             return res.status(404).json({
                 msg:"Not have enough balance"
             }
