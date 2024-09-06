@@ -36,8 +36,14 @@ try {
 
 const user=await userSchema.create({...body,password:hashpwd});
 await accountSchema.create({userId:user._id,balance:Math.floor(Math.random()*10000)+1})
+const payload={
+    id:user._id,
+     firstName:user.firstName,
+}
+const token=jwt.sign(payload,process.env.JWT_SECRECT,{expiresIn:'24h'});
 return res.status(200).json({
     msg:"user created successfully",
+    token
 })
 
 
