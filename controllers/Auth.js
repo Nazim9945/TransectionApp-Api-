@@ -21,6 +21,7 @@ try {
         })
     }
     const existuser=await userSchema.findOne({email});
+    console.log(existuser)
     if(existuser)
         return res.status(411).json({
     msg:"user already exist"
@@ -69,7 +70,7 @@ try {
     }
     const existuser=await userSchema.findOne({email});
     if(!existuser)
-        return res.status(411).json({
+        return res.status(404).json({
     msg:"user does not exist,create account first!!"
 })
 if(await bcrypt.compare(password,existuser.password)){
